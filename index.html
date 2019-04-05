@@ -1,8 +1,151 @@
 <!DOCTYPE html>
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta content="IE=11.0000" http-equiv="X-UA-Compatible">
- 
-<meta name="GENERATOR" content="MSHTML 11.00.9600.18125"> 
- <link href="./Furui Liu_files/jemdoc.css" rel="stylesheet" type="text/css"> <title>Baoxiang Wang</title> </head> 
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+
+<head>
+	<link rel="shortcut icon" href="/favicon.ico">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9">
+	<script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script><script type="text/javascript" src="http://cdn.dota2.com/apps/dota2/javascript/static/jquery-1.7.1.min.js?v=5023704"></script>
+<script type="text/javascript">$J = jQuery;</script><script type="text/javascript" src="http://community.edgecast.steamstatic.com/public/shared/javascript/shared_global.js?v=OBsnl6VGf94w&amp;l=english"></script>
+	<link href="./Furui Liu_files/jemdoc.css" rel="stylesheet" type="text/css">
+	<title>Baoxiang Wang</title>
+    		
+	<script type="text/javascript">
+
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-33822635-2']);
+		_gaq.push(['_setSampleRate', '1']);		_gaq.push(['_setDomainName', 'dota2.com']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+
+	</script>
+    <script>
+        $( function () {
+            var URL = 'http://www.dota2.com/';
+            URL = URL + 'jsfeed/heropediadata?feeds=herodata,itemdata';
+            $.ajax(
+                {
+                    type:'GET',
+                    cache:true,
+                    url: URL,
+                    dataType:'jsonp',
+                    success: function( data )
+                    {
+                        g_HeroData = data['herodata'];
+                        g_ItemData = data['itemdata'];
+                        formatHeroAndItemNotes();
+                    }
+                }
+            );
+        } );
+
+        var g_HeroData = false;
+        var g_ItemData = false;
+        function formatHeroAndItemNotes()
+        {
+            $.each( ['items','heroes'], function( i, type ) {
+                var containers = ['#Heroes','#Items'];
+                for ( i = 0; i < containers.length; i++ )
+                {
+                    container = containers[i];
+                    var strContents = $(container).html();
+                    if ( strContents )
+                    {
+                        var foundTags = strContents.match( /\[\[[A-Za-z-_:]+\]\]/g );
+                        if ( foundTags )
+                        {
+                            for ( x = 0; x < foundTags.length; x++ )
+                            {
+                                tag = foundTags[x];
+                                tag = tag.substring( 2, tag.length-2 );
+                                var strHTMLNameSuffix = '';
+                                if ( tag.includes( ':reworked' ) )
+                                {
+                                    tag = tag.replace( ':reworked', '' );
+                                    strHTMLNameSuffix += '<span class="Reworked">' + ( container == '#Items' ? 'Item Reworked' : 'Ability Rework' ) + '</span>';
+                                }
+                                if ( tag.includes( ':new' ) )
+                                {
+                                    tag = tag.replace( ':new', '' );
+                                    strHTMLNameSuffix += '<span class="New">New Item</span>';
+                                }
+                                if ( tag.includes( ':captains' ) )
+                                {
+                                    tag = tag.replace( ':captains', '' );
+                                    strHTMLNameSuffix += '<span class="Captains">Added to Captains Mode</span>';
+                                }
+                                if ( tag.includes( ':scepteradded' ) )
+                                {
+                                    tag = tag.replace( ':scepteradded', '' );
+                                    strHTMLNameSuffix += '<span class="Scepter">Scepter Added</span>';
+                                }
+                                if ( tag.includes( ':scepterreworked' ) )
+                                {
+                                    tag = tag.replace( ':scepterreworked', '' );
+                                    strHTMLNameSuffix += '<span class="Scepter">Scepter Reworked</span>';
+                                }
+                                bUnfound = false;
+                                if ( g_ItemData[tag] )
+                                {
+                                    path = 'items/'+tag+'_lg.png';
+                                    name = g_ItemData[tag].dname;
+                                    hw = 'width="48" height="36"';
+                                }
+                                else if ( g_HeroData[tag] )
+                                {
+                                    path = 'heroes/'+tag+'_sb.png';
+                                    name = g_HeroData[tag].dname;
+                                    hw = '';
+                                }
+                                else
+                                {
+                                    bUnfound = true;
+                                }
+                                if ( !bUnfound )
+                                {
+                                    var strHTML = '<div class="ChangeNoteImage"><img src="http://cdn.dota2.com/apps/dota2/images/'+path+'" '+hw+' /></div><br style="clear: left;"/>';
+                                    strHTML += '<b>' + name + ':&nbsp;' + strHTMLNameSuffix + '</b>';
+                                    strContents = strContents.replace( foundTags[x], strHTML );
+                                }
+                            }
+                            $(container).html( strContents );
+                        }
+                    }
+                }
+            });
+
+            var eCount = 0;
+            $( '.ChangeDetailsExtended' ).each( function() {
+                var $extended = $( this );
+                $extended.attr( 'id', 'extended'+eCount );
+                $extended.before( '<a href="#" class="ChangeDetailsEToggle" id="eToggle'+eCount+'" onclick="$(\'#extended'+eCount+'\').show();$(this).hide();return false;">+ Show Details</a>' );
+                $extended.html( '<a href="#" id="eToggleHide'+eCount+'" class="ChangeDetailsEToggle HideButton" onclick="$(\'#extended'+eCount+'\').hide();$(\'#eToggle'+eCount+'\').show();return false;">- Hide Details</a>' + $extended.html() );
+                eCount++;
+            } );
+            $( '.ChangeDetailsPopup' ).each( function() {
+                var $popup = $( this );
+                var $popupHoverButton = $( '<a href="#">[?]</a>' );
+                $popup.before( $popupHoverButton );
+                $popupHoverButton.hover( function() {
+                    $popup.css( "display", "block" );
+                }, function() {
+                    $popup.css( "display", "none" );
+                });
+                $popupHoverButton.click( function() {
+                    // Suppress the click event
+                    return false;
+                });
+            } );
+        }
+    </script>
+</head>
+
 <body>
 <div id="layout-content">
 <div id="make-narrow">
@@ -21,7 +164,7 @@
             Shatin NT, HK. 
         </p>
         <p><b>Email</b>: <a href = "mailto:bxwang@cse.cuhk.edu.hk">bxwang@cse.cuhk.edu.hk</a></p>
-    <p> 
+    <p>
     </p>
         </div>
     </td>
@@ -37,7 +180,8 @@
         <hr>
         <div id="edu" align="left">
         <h2>Biography</h2>
-        <p>I am a fifth-year PhD student in Computer Science, the Chinese University of Hong Kong, under <a href="https://www.cse.cuhk.edu.hk/~siuon/">Prof. Siu On Chan</a>. I also get advice from <a href="https://www.cse.cuhk.edu.hk/~andrejb/">Prof. Andrej Bogdanov</a>. I obtained my bachelor degree in Engineering from Shanghai Jiao Tong University, with major cryptography and information security, under <a href="http://bcmi.sjtu.edu.cn/~zhaohai/">Prof. Hai Zhao</a>. My research interest lies on reinforcement learning and online learning.
+        <p>I'm a fifth-year PhD student in Computer Science, the Chinese University of Hong Kong, under <a href="https://www.cse.cuhk.edu.hk/~siuon/">Prof. Siu On Chan</a>. I also get advice from <a href="https://www.cse.cuhk.edu.hk/~andrejb/">Prof. Andrej Bogdanov</a>. I obtained my bachelor degree in Engineering from Shanghai Jiao Tong University, with major cryptography and information security, under <a href="http://bcmi.sjtu.edu.cn/~zhaohai/">Prof. Hai Zhao</a>. My research interest lies on reinforcement learning and online learning. <br><br>
+        I'm currently visiting University of Alberta and Borealis AI, Edmonton. I'm in 3-232 CCIS building.
         </p>
         <hr></div>
     </td>
@@ -52,15 +196,6 @@
 
         <ul>
         <li>
-        <p>Approximately Partitioned Policy Gradient for Variance Reduction in Reinforcement Learning<br>
-        <b>Baoxiang Wang</b>, Jiajin Li, Andrej Bogdanov. <br>
-        <i>ARXIV.</i> <br>
-        </p>
-        </li>
-        </ul>
-
-        <ul>
-        <li>
         <p>Recurrent Existence Determination through Policy Optimization [<a href="red-full.pdf">pdf</a>]<br>
         <b>Baoxiang Wang</b>. <br>
         <i>ICML Workshop on GoalsRL 2018.</i> <br>
@@ -72,7 +207,7 @@
         <li>
         <p>Policy Optimization with Second-Order Advantage Information [<a href="https://arxiv.org/abs/1805.03586">pdf</a>][<a href="https://github.com/wangbx66/Action-Subspace-Dependent">code</a>]<br>
         Jiajin Li, <b>Baoxiang Wang</b>. <br> 
-	Both authors contribute equally.<br>
+	Both authors contribute equally in alphabetical order. <span class="ChangeDetailsPopup" style="display: none;"><br>Which is a tradition in some theory groups.</span> <br>
         <i>IJCAI 2018. ICLR Workshop 2018.</i> <br>
         <!--Both authors contribute equally.-->
         </p>
@@ -99,7 +234,7 @@
         <li>
         <p> PAID: Prioritizing App Issues for Developers by Tracking User Reviews Over Versions. [<a href="http://appsrv.cse.cuhk.edu.hk/~cygao/papers/cygao_issre2015.pdf">pdf</a>] <br>
         Cuiyun Gao, <b>Baoxiang Wang</b>, Pinjia He, Jieming Zhu, Yangfan Zhou, Michael R. Lyu. <br>
-        I contribute IV.b and IV.c and the corresponding implementation. <br>
+        I contribute IV.b and IV.c and the corresponding implementation. <span class="ChangeDetailsPopup" style="display: none;"><br>These sections are on language models to process software reviews.</span> <br>
 	<i>Software Reliability Engineering (ISSRE) 2015.</i>
         </p>
         </li>
@@ -120,7 +255,7 @@
 
         <ul><li><p>06/2017 - 10/2017: Research Analyst Intern at Cubist Systematic Strategies, NYC, with <a href="https://www.linkedin.com/in/ying-julie-zhu-00184312/">Dr. Julie Zhu</a> and <a href="https://www.linkedin.com/in/andrewoarnold/">Dr. Andrew Arnold</a>.</p></li></ul>
         
-        <ul><li><p>06/2016 - 10/2016: RL Research Intern at Siemens Research, Princeton, with <a href="https://scholar.google.com.hk/citations?user=uJF3QNUAAAAJ&hl=en">Dr. Sam Zheng</a>.</p></li></ul>
+        <ul><li><p>06/2016 - 10/2016: Research Intern at Siemens Research, Princeton, with <a href="https://scholar.google.com.hk/citations?user=uJF3QNUAAAAJ&hl=en">Dr. Sam Zheng</a>.</p></li></ul>
 
         <ul><li><p>06/2015 - 10/2015: Research Analyst Intern at Astri Inc., HK, with <a href="http://www.astri.org/about/organization/people/profile/dr-james-lei">Dr. James Lei</a>.</p></li></ul>
 </table>
@@ -128,4 +263,8 @@
 	
 	<!-- <script type="text/javascript" src="//rf.revolvermaps.com/0/0/1.js?i=5xud8mg9jec&amp;s=350&amp;m=0&amp;v=false&amp;r=false&amp;b=000000&amp;n=false&amp;c=ff0000" async="async"></script> -->
   
-  </div></div></body></html>
+  </div></div>
+  
+
+  
+  </body></html>
