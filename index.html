@@ -10,135 +10,7 @@
 <script type="text/javascript">$J = jQuery;</script><script type="text/javascript" src="http://community.edgecast.steamstatic.com/public/shared/javascript/shared_global.js?v=OBsnl6VGf94w&amp;l=english"></script>
 	<link href="./Furui Liu_files/jemdoc.css" rel="stylesheet" type="text/css">
 	<title>Baoxiang Wang</title>
-    		
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-33822635-2']);
-		_gaq.push(['_setSampleRate', '1']);		_gaq.push(['_setDomainName', 'dota2.com']);
-		_gaq.push(['_trackPageview']);
-		(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
-    <script>
-        $( function () {
-            var URL = 'http://www.dota2.com/';
-            URL = URL + 'jsfeed/heropediadata?feeds=herodata,itemdata';
-            $.ajax(
-                {
-                    type:'GET',
-                    cache:true,
-                    url: URL,
-                    dataType:'jsonp',
-                    success: function( data )
-                    {
-                        g_HeroData = data['herodata'];
-                        g_ItemData = data['itemdata'];
-                        formatHeroAndItemNotes();
-                    }
-                }
-            );
-        } );
-        var g_HeroData = false;
-        var g_ItemData = false;
-        function formatHeroAndItemNotes()
-        {
-            $.each( ['items','heroes'], function( i, type ) {
-                var containers = ['#Heroes','#Items'];
-                for ( i = 0; i < containers.length; i++ )
-                {
-                    container = containers[i];
-                    var strContents = $(container).html();
-                    if ( strContents )
-                    {
-                        var foundTags = strContents.match( /\[\[[A-Za-z-_:]+\]\]/g );
-                        if ( foundTags )
-                        {
-                            for ( x = 0; x < foundTags.length; x++ )
-                            {
-                                tag = foundTags[x];
-                                tag = tag.substring( 2, tag.length-2 );
-                                var strHTMLNameSuffix = '';
-                                if ( tag.includes( ':reworked' ) )
-                                {
-                                    tag = tag.replace( ':reworked', '' );
-                                    strHTMLNameSuffix += '<span class="Reworked">' + ( container == '#Items' ? 'Item Reworked' : 'Ability Rework' ) + '</span>';
-                                }
-                                if ( tag.includes( ':new' ) )
-                                {
-                                    tag = tag.replace( ':new', '' );
-                                    strHTMLNameSuffix += '<span class="New">New Item</span>';
-                                }
-                                if ( tag.includes( ':captains' ) )
-                                {
-                                    tag = tag.replace( ':captains', '' );
-                                    strHTMLNameSuffix += '<span class="Captains">Added to Captains Mode</span>';
-                                }
-                                if ( tag.includes( ':scepteradded' ) )
-                                {
-                                    tag = tag.replace( ':scepteradded', '' );
-                                    strHTMLNameSuffix += '<span class="Scepter">Scepter Added</span>';
-                                }
-                                if ( tag.includes( ':scepterreworked' ) )
-                                {
-                                    tag = tag.replace( ':scepterreworked', '' );
-                                    strHTMLNameSuffix += '<span class="Scepter">Scepter Reworked</span>';
-                                }
-                                bUnfound = false;
-                                if ( g_ItemData[tag] )
-                                {
-                                    path = 'items/'+tag+'_lg.png';
-                                    name = g_ItemData[tag].dname;
-                                    hw = 'width="48" height="36"';
-                                }
-                                else if ( g_HeroData[tag] )
-                                {
-                                    path = 'heroes/'+tag+'_sb.png';
-                                    name = g_HeroData[tag].dname;
-                                    hw = '';
-                                }
-                                else
-                                {
-                                    bUnfound = true;
-                                }
-                                if ( !bUnfound )
-                                {
-                                    var strHTML = '<div class="ChangeNoteImage"><img src="http://cdn.dota2.com/apps/dota2/images/'+path+'" '+hw+' /></div><br style="clear: left;"/>';
-                                    strHTML += '<b>' + name + ':&nbsp;' + strHTMLNameSuffix + '</b>';
-                                    strContents = strContents.replace( foundTags[x], strHTML );
-                                }
-                            }
-                            $(container).html( strContents );
-                        }
-                    }
-                }
-            });
-            var eCount = 0;
-            $( '.ChangeDetailsExtended' ).each( function() {
-                var $extended = $( this );
-                $extended.attr( 'id', 'extended'+eCount );
-                $extended.before( '<a href="#" class="ChangeDetailsEToggle" id="eToggle'+eCount+'" onclick="$(\'#extended'+eCount+'\').show();$(this).hide();return false;">+ Show Details</a>' );
-                $extended.html( '<a href="#" id="eToggleHide'+eCount+'" class="ChangeDetailsEToggle HideButton" onclick="$(\'#extended'+eCount+'\').hide();$(\'#eToggle'+eCount+'\').show();return false;">- Hide Details</a>' + $extended.html() );
-                eCount++;
-            } );
-            $( '.ChangeDetailsPopup' ).each( function() {
-                var $popup = $( this );
-                var $popupHoverButton = $( '<a href="#">[?]</a>' );
-                $popup.before( $popupHoverButton );
-                $popupHoverButton.hover( function() {
-                    $popup.css( "display", "block" );
-                }, function() {
-                    $popup.css( "display", "none" );
-                });
-                $popupHoverButton.click( function() {
-                    // Suppress the click event
-                    return false;
-                });
-            } );
-        }
-    </script>
+
 </head>
 
 <body>
@@ -181,7 +53,7 @@
         <div id="edu" align="left">
         <h2>Biography</h2>
         <p>I'm a sixth-year PhD student in Computer Science and Engineering, the Chinese University of Hong Kong, under <a href="https://www.cse.cuhk.edu.hk/~siuon/">Prof. Siu On Chan</a>. I also get advice from <a href="https://www.cse.cuhk.edu.hk/~andrejb/">Prof. Andrej Bogdanov</a>. My research interest lies on reinforcement learning, online learning, and Markov decesion process. I obtained my bachelor degree in Engineering from Shanghai Jiao Tong University in 2014. My major was cryptography and information security, under <a href="http://bcmi.sjtu.edu.cn/~zhaohai/">Prof. Hai Zhao</a>. <br><br>
-        I'm currently visiting University of Alberta and Borealis AI, Edmonton. I'm at room 3-232 CCIS building, University of Alberta.
+        In the last year, I was visiting University of Alberta and Borealis AI, Edmonton. I used to be at room 3-232 CCIS building, University of Alberta.
         </p>
         <hr></div>
     </td>
@@ -225,7 +97,7 @@
         <li>
         <p>Privacy-preserving Q-Learning with Functional Noise in Continuous State Spaces [<a href="https://arxiv.org/abs/1901.10634">paper</a>][<a href="https://github.com/wangbx66/differentially-private-q-learning">code</a>]<br>
         <b>Baoxiang Wang</b>, Nidhi Hegde. <br>
-        <i>The Multi-disciplinary Conference on Reinforcement Learning and Decision Making (RLDM) 2019.</i> <br>
+        <i>The Multi-disciplinary Conference on Reinforcement Learning and Decision Making (RLDM) 2019. Manuscript under review for some archived conference.</i> <br>
         </p>
         </li>
         </ul>
@@ -278,11 +150,11 @@
 
         <!--<ul><li><p>08/2018 - 09/2019: Research Scientist at Borealis AI, University of Alberta, Edmonton, with Dr. Nidhi Hegde and Prof. Mattrew E. Taylor.</p></li></ul>-->
 
-        <ul><li><p>06/2017 - 10/2017: Research Analyst Intern at Cubist Systematic Strategies, New York City, with <a href="https://www.linkedin.com/in/ying-julie-zhu-00184312/">Prof. Ying Zhu</a> and <a href="https://www.andrewoarnold.com/">Dr. Andrew Arnold</a>.</p></li></ul>
+        <ul><li><p>06/2017 - 10/2017: Quantitative Research Analyst Intern at Cubist Systematic Strategies, New York City, with <a href="https://www.linkedin.com/in/ying-julie-zhu-00184312/">Prof. Ying Zhu</a> and <a href="https://www.andrewoarnold.com/">Dr. Andrew Arnold</a>.</p></li></ul>
 
         <ul><li><p>06/2016 - 09/2016: Research Science Intern at Siemens Research, Princeton NJ, with <a href="https://scholar.google.com/citations?user=uJF3QNUAAAAJ&hl=en">Dr. Sam Zheng</a>.</p></li></ul>
 
-        <ul><li><p>06/2015 - 09/2015: Research Analyst Intern at Hong Kong Applied Science and Technology Research Institute, with <a href="http://www.astri.org/about/organization/people/profile/dr-james-lei">Dr. James Lei</a>.</p></li></ul>
+        <ul><li><p>06/2015 - 09/2015: Quantitative Research Analyst Intern at Hong Kong Applied Science and Technology Research Institute, with <a href="http://www.astri.org/about/organization/people/profile/dr-james-lei">Dr. James Lei</a>.</p></li></ul>
         </div>
     </td>
     <td width="5%" align="left"></td>
